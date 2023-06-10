@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<title>Game of Life</title>
+		<title>KnightLife</title>
 		<style>
 			canvas {
 				border: 1px solid black;
@@ -68,19 +68,26 @@
 				grid.splice(0, numRows, ...newGrid);
 			}
 
-			// Count the number of living neighbors around a cell
+			// Count the number of knight neighbors around a cell
 			function countNeighbors(row, col) {
 				let count = 0;
 
-				for (let i = -1; i <= 1; i++) {
-					for (let j = -1; j <= 1; j++) {
-						if (i === 0 && j === 0) continue;
+				const knightMoves = [
+					{ row: -2, col: -1 },
+					{ row: -2, col: 1 },
+					{ row: -1, col: -2 },
+					{ row: -1, col: 2 },
+					{ row: 1, col: -2 },
+					{ row: 1, col: 2 },
+					{ row: 2, col: -1 },
+					{ row: 2, col: 1 }
+				];
 
-						const neighborRow = (row + i + numRows) % numRows;
-						const neighborCol = (col + j + numCols) % numCols;
-
-						count += grid[neighborRow][neighborCol];
-					}
+				for (let i = 0; i < knightMoves.length; i++) {
+					const move = knightMoves[i];
+					const neighborRow = (row + move.row + numRows) % numRows;
+					const neighborCol = (col + move.col + numCols) % numCols;
+					count += grid[neighborRow][neighborCol];
 				}
 
 				return count;
