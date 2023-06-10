@@ -10,6 +10,9 @@
   </head>
   <body>
     <canvas id="canvas" width="400" height="400"></canvas>
+    <button id="startButton">Start</button>
+    <button id="stopButton">Stop</button>
+    <button id="stepButton">Step</button>
     <script>
       const canvas = document.getElementById("canvas");
       const ctx = canvas.getContext("2d");
@@ -27,6 +30,9 @@
       grid[3][3] = 1;
       grid[3][4] = 1;
       grid[4][3] = 1;
+
+      let isRunning = false;
+      let animationFrameId;
 
       // Render the grid on the canvas
       function render() {
@@ -89,10 +95,42 @@
       function runSimulation() {
         render();
         nextGeneration();
-        requestAnimationFrame(runSimulation);
+
+        if (isRunning) {
+          animationFrameId = requestAnimationFrame(runSimulation);
+        }
       }
 
-      runSimulation();
+      // Start the simulation
+      function startSimulation() {
+        if (!isRunning) {
+          isRunning = true;
+          runSimulation();
+        }
+      }
+
+      // Stop the simulation
+      function stopSimulation() {
+        if (isRunning) {
+          isRunning = false;
+          cancelAnimationFrame(animationFrameId);
+        }
+      }
+
+      // Perform a single step of the simulation
+      function stepSimulation() {
+        stopSimulation();
+        runSimulation();
+      }
+
+      // Add event listeners to buttons
+      const startButton = document.getElementById("startButton");
+      const stopButton = document.getElementById("stopButton");
+      const stepButton = document.getElementById("stepButton");
+
+      startButton.addEventListener("click", startSimulation);
+      stopButton.addEventListener("click", stopSimulation);
+      stepButton.addEventListener("click", stepSimulation);
     </script>
   </body>
 </html>
