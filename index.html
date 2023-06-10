@@ -92,7 +92,7 @@
 				const col = Math.floor(x / cellSize);
 				const row = Math.floor(y / cellSize);
 
-				grid[row][col] = 1;
+				grid[row][col] = 1 - grid[row][col];
 				render();
 			}
 
