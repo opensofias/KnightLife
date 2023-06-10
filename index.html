@@ -23,14 +23,6 @@
 			// Create a 2D array to represent the grid
 			const grid = new Array(numRows).fill(null).map(() => new Array(numCols).fill(0));
 
-			// Set initial state
-			grid[1][1] = 1;
-			grid[1][2] = 1;
-			grid[2][2] = 1;
-			grid[3][3] = 1;
-			grid[3][4] = 1;
-			grid[4][3] = 1;
-
 			let isRunning = false;
 			let animationFrameId;
 
@@ -91,6 +83,19 @@
 				return count;
 			}
 
+			// Handle click/tap events on the canvas
+			function handleClick(event) {
+				const rect = canvas.getBoundingClientRect();
+				const x = event.clientX - rect.left;
+				const y = event.clientY - rect.top;
+
+				const col = Math.floor(x / cellSize);
+				const row = Math.floor(y / cellSize);
+
+				grid[row][col] = 1;
+				render();
+			}
+
 			// Run the simulation
 			function runSimulation() {
 				render();
@@ -131,6 +136,9 @@
 			startButton.addEventListener("click", startSimulation);
 			stopButton.addEventListener("click", stopSimulation);
 			stepButton.addEventListener("click", stepSimulation);
+
+			// Add event listener to canvas
+			canvas.addEventListener("click", handleClick);
 		</script>
 	</body>
 </html>
