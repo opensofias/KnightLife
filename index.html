@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Game of Life</title>
+    <style>
+      canvas {
+        border: 1px solid black;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="canvas" width="400" height="400"></canvas>
+    <script>
+      const canvas = document.getElementById("canvas");
+      const ctx = canvas.getContext("2d");
+      const cellSize = 10;
+      const numRows = canvas.height / cellSize;
+      const numCols = canvas.width / cellSize;
+
+      // Create a 2D array to represent the grid
+      const grid = new Array(numRows).fill(null).map(() => new Array(numCols).fill(0));
+
+      // Set initial state
+      grid[1][1] = 1;
+      grid[1][2] = 1;
+      grid[2][2] = 1;
+      grid[3][3] = 1;
+      grid[3][4] = 1;
+      grid[4][3] = 1;
+
+      // Render the grid on the canvas
+      function render() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        for (let row = 0; row < numRows; row++) {
+          for (let col = 0; col < numCols; col++) {
+            if (grid[row][col] === 1) {
+              ctx.fillRect(col * cellSize, row * cellSize, cellSize, cellSize);
+            }
+          }
+        }
+      }
+
+      // Calculate the next generation of the grid
+      function nextGeneration() {
+        const newGrid = new Array(numRows).fill(null).map(() => new Array(numCols).fill(0));
+
+        for (let row = 0; row < numRows; row++) {
+          for (let col = 0; col < numCols; col++) {
+            const cell = grid[row][col];
+            const numNeighbors = countNeighbors(row, col);
+
+            if (cell === 1) {
+              if (numNeighbors < 2 || numNeighbors > 3) {
+                newGrid[row][col] = 0; // Cell dies
+              } else {
+                newGrid[row][col] = 1; // Cell survives
+              }
+            } else {
+              if (numNeighbors === 3) {
+                newGrid[row][col] = 1; // Cell is born
+              }
+            }
+          }
+        }
+
+        grid.splice(0, numRows, ...newGrid);
+      }
+
+      // Count the number of living neighbors around a cell
+      function countNeighbors(row, col) {
+        let count = 0;
+
+        for (let i = -1; i <= 1; i++) {
+          for (let j = -1; j <= 1; j++) {
+            if (i === 0 && j === 0) continue;
+
+            const neighborRow = (row + i + numRows) % numRows;
+            const neighborCol = (col + j + numCols) % numCols;
+
+            count += grid[neighborRow][neighborCol];
+          }
+        }
+
+        return count;
+      }
+
+      // Run the simulation
+      function runSimulation() {
+        render();
+		debugger
+        nextGeneration();
+        requestAnimationFrame(runSimulation);
+      }
+
+      runSimulation();
+    </script>
+  </body>
+</html>
