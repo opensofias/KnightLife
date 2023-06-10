@@ -13,6 +13,8 @@
 		<button id="startButton">Start</button>
 		<button id="stopButton">Stop</button>
 		<button id="stepButton">Step</button>
+		<label for="speedInput">Speed (FPS):</label>
+		<input type="number" id="speedInput" min="1" max="60" value="2">
 		<script>
 			const canvas = document.getElementById("canvas");
 			const ctx = canvas.getContext("2d");
@@ -24,7 +26,8 @@
 			const grid = new Array(numRows).fill(null).map(() => new Array(numCols).fill(0));
 
 			let isRunning = false;
-			let animationFrameId;
+			let timeoutId;
+			let speed = parseInt(document.getElementById("speedInput").value);
 
 			// Render the grid on the canvas
 			function render() {
@@ -92,7 +95,7 @@
 				const col = Math.floor(x / cellSize);
 				const row = Math.floor(y / cellSize);
 
-				grid[row][col] = 1 - grid[row][col];
+				grid[row][col] = 1 - grid[row][col]; // Toggle cell state
 				render();
 			}
 
@@ -102,7 +105,7 @@
 				nextGeneration();
 
 				if (isRunning) {
-					animationFrameId = requestAnimationFrame(runSimulation);
+					timeoutId = setTimeout(runSimulation, 1000 / speed);
 				}
 			}
 
@@ -118,7 +121,7 @@
 			function stopSimulation() {
 				if (isRunning) {
 					isRunning = false;
-					cancelAnimationFrame(animationFrameId);
+					clearTimeout(timeoutId);
 				}
 			}
 
@@ -128,14 +131,21 @@
 				runSimulation();
 			}
 
+			// Update simulation speed
+			function updateSpeed() {
+				speed = parseInt(document.getElementById("speedInput").value);
+			}
+
 			// Add event listeners to buttons
 			const startButton = document.getElementById("startButton");
 			const stopButton = document.getElementById("stopButton");
 			const stepButton = document.getElementById("stepButton");
+			const speedInput = document.getElementById("speedInput");
 
 			startButton.addEventListener("click", startSimulation);
 			stopButton.addEventListener("click", stopSimulation);
 			stepButton.addEventListener("click", stepSimulation);
+			speedInput.addEventListener("input", updateSpeed);
 
 			// Add event listener to canvas
 			canvas.addEventListener("click", handleClick);
